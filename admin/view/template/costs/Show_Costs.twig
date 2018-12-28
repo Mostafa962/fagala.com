@@ -1,0 +1,113 @@
+{{ header }}{{ column_left }}
+<div id="content">
+  <div class="page-header">
+    <div class="container-fluid">
+      <div class="float-right">
+        <a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary">
+          <i class="fas fa-plus"></i>
+        </a> 
+        <button type="button" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger" onclick="confirm('{{ text_confirm }}') ? $('#form-category').submit() : false;">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+      </div>
+      <h1>{{ heading_title }}</h1>
+      <ol class="breadcrumb">
+        {% for breadcrumb in breadcrumbs %}
+          <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </div>
+  <div class="container-fluid">
+    {% if error_warning %}
+      <div class="alert alert-danger alert-dismissible"><i class="fas fa-exclamation-circle"></i> {{ error_warning }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>
+    {% endif %}
+    {% if success %}
+      <div class="alert alert-success alert-dismissible"><i class="fas fa-check-circle"></i> {{ success }}
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+      </div>
+    {% endif %}
+    <div class="card">
+      <div class="card-header"><i class="fas fa-list"></i> {{ text_list }}</div>
+      <div class="card-body">
+        <form action="{{ delete }}" method="post" enctype="multipart/form-data" id="form-category">
+          <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <td style="width: 1px;" class="text-center">
+                      <input type="checkbox" onclick="$('input[name*=\'selected\']').trigger('click');"/>
+                  </td>
+                  <td class="text-center"><a href="">{{ column_id }}</a></td>
+                  <td class="text-center">
+                      <a href="{{ sort_name }}">
+                        {{ column_name }}
+                      </a>
+                  </td>
+                  <td class="text-center">
+                      <a href="{{ sort_sort_order }}">{{ column_sort_order }}</a>
+                  </td>
+                  <td class="text-center">{{ column_action }}</td>
+                </tr>
+              </thead>
+              <tbody>
+                {% if costs %}
+                  {% for cost in costs %}
+                    <tr>
+                      <td class="text-center">{% if cost.cost_id in selected %}
+                          <input type="checkbox" name="selected[]" value="{{ cost.cost_id }}" checked="checked"/>
+                        {% else %}
+                          <input type="checkbox" name="selected[]" value="{{ cost.cost_id }}"/>
+                        {% endif %}</td>
+                      <td class="text-center">{{ cost.cost_id }}</td>
+                      <td class="text-center">{{ cost.description }}</td>
+                      <td class="text-center">{{ cost.value }}</td>
+                      <td class="text-center">
+                        <a href="{{ cost.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary">
+                          <i class="fas fa-pencil-alt"></i>
+                        </a>
+                      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#del_cost"><i class="fa fa-trash"></i></button>
+                      <div class="modal fade" id="del_cost" role="dialog">
+                        <div class="modal-dialog">
+                          <!-- Modal content-->
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h4 class="modal-title text-left">Delete Cost</h4>
+                            </div>
+                             <form method="post" action="{{cost.delete}}">
+                            <div class="modal-body">
+                              Are you want to delte this Cost
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-info" data-dismiss="modal">Close</button>
+                              <input type="hidden" name="cost_id" value="{{ cost.cost_id }}">
+                             <input type="submit" name="deleteCost" value="Delete" class="btn btn-danger">
+                            </div>
+                             </form>
+                          </div>
+                          
+                        </div>
+                      </div>
+                        <!-- sss -->
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td class="text-center" colspan="4">{{ text_no_results }}</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </form>
+        <div class="row">
+          <div class="col-sm-6 text-left">{{ pagination }}</div>
+          <div class="col-sm-6 text-right">{{ results }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{{ footer }}
